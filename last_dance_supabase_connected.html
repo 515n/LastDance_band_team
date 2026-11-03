@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050a12">
+<title>Last Dance — Bans System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{--accent:#258cff;--accent2:#61c3ff;--bg:#05080d;--panel:#0c1119;--line:#ffffff16;--muted:#aaaeb8;--white:#f4f5f8;--red:#258cff}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}body{margin:0;background:#05080d;color:var(--white);font-family:'IBM Plex Sans Arabic',sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse at 50% 43%,#122c49 0%,#080e17 38%,#030609 82%);pointer-events:none}
+body:after{content:"";position:fixed;inset:0;z-index:-2;opacity:.14;pointer-events:none;background-image:linear-gradient(#9bbfe51c 1px,transparent 1px),linear-gradient(90deg,#9bbfe51c 1px,transparent 1px),url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.48'/%3E%3C/svg%3E");background-size:42px 42px,42px 42px,180px 180px}
+a{color:inherit;text-decoration:none}button,input{font:inherit}.top{height:64px;position:fixed;z-index:20;inset:0 0 auto;background:#080b10dc;border-bottom:1px solid #ffffff12;display:flex;align-items:center;padding:0 32px;justify-content:space-between;backdrop-filter:blur(12px)}
+.brand{font:900 11px Inter;letter-spacing:.2em;display:flex;align-items:center;gap:9px;direction:ltr}.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.brand span:last-child{color:var(--accent2);font-weight:500}.nav{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:30px}.nav a{font-size:11px;color:#c1c2c8;transition:.2s}.nav a:hover{color:var(--accent2)}.homebtn{background:var(--accent);border:0;border-radius:30px;color:white;padding:9px 22px;font-size:11px;cursor:pointer}
+.side{position:fixed;z-index:4;top:120px;bottom:24px;width:32px;display:flex;align-items:center;justify-content:space-between;flex-direction:column;color:#8a909b;font:8px Inter;letter-spacing:.3em;writing-mode:vertical-rl}.side.left{left:12px}.side.right{right:12px}.side:before{content:"";position:absolute;top:0;bottom:0;width:2px;background:repeating-linear-gradient(to bottom,#71859b44 0 5px,transparent 5px 11px)}.side b{color:var(--accent);font-size:12px}
+main{padding-top:64px}.hero{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;text-align:center;position:relative;padding:100px 22px 70px;overflow:hidden}
+.hero:before{content:"";position:absolute;width:min(600px,80vw);height:min(600px,80vw);border:1px solid #a7c8ef12;border-radius:50%;box-shadow:0 0 0 45px #a7c8ef05,0 0 0 100px #a7c8ef03;top:50%;left:50%;transform:translate(-50%,-48%);pointer-events:none}
+.hero:after{content:"LD";position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);font:900 clamp(190px,32vw,440px)/1 Inter;color:#ffffff06;letter-spacing:-.1em;pointer-events:none}
+.hero-inner{position:relative;z-index:1;max-width:700px}.notice{margin:0 auto 145px;border:1px solid #258cff55;background:#10151dd9;border-radius:15px;padding:10px 17px;display:flex;gap:15px;align-items:center;width:max-content;max-width:95%;box-shadow:0 10px 35px #0008;cursor:pointer}.notice .bell{border:1px solid #258cff55;color:var(--accent2);border-radius:9px;padding:7px 10px}.notice strong{font-size:12px;display:block}.notice small{display:block;color:#9da5b1;font-size:9px}.notice .num{background:var(--accent);border-radius:50%;font:700 10px Inter;padding:5px 7px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #ffffff19;background:#15191f99;border-radius:30px;padding:8px 17px;color:#b6bac2;font-size:10px;margin-bottom:18px}.eyebrow i{width:5px;height:5px;background:var(--accent);border-radius:50%}
+h1{font:900 clamp(48px,7vw,86px)/1 Inter;margin:0 0 20px;letter-spacing:-.055em;color:#f5f6f8;text-shadow:0 5px 40px #000}.hero p{max-width:530px;margin:0 auto;color:#b6b8c0;font-size:12px;line-height:2.1}.actions{display:flex;gap:10px;justify-content:center;margin:28px 0 42px}.btn{border-radius:30px;padding:12px 24px;font-size:11px;border:1px solid #ffffff1b;background:#171a20;color:#eee;cursor:pointer;transition:.2s}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px #258cff35}
+.stats{display:flex;justify-content:center;gap:12px}.stat{width:145px;padding:15px 10px;border:1px solid #ffffff17;border-radius:16px;background:linear-gradient(145deg,#15181e,#0b0d12);box-shadow:0 12px 35px #0007}.stat strong{font:900 30px Inter;display:block;direction:ltr}.stat strong em{font:700 12px Inter;color:var(--accent);font-style:normal}.stat small{font-size:10px;color:#b5b6bd}
+.section{max-width:1160px;margin:0 auto;padding:95px 35px;position:relative}.section-title{text-align:center;margin-bottom:34px}.section-title small{font:700 9px Inter;letter-spacing:.28em;color:var(--accent2)}.section-title h2{font-size:27px;margin:8px 0}.section-title p{font-size:11px;color:#999faa;margin:0}
+.announcement{max-width:760px;margin:auto;border:1px solid #258cff44;background:linear-gradient(110deg,#101b2b,#0a1019);padding:22px 24px;border-radius:15px;display:flex;align-items:center;justify-content:space-between;gap:15px}.announcement h3{font-size:15px;margin:0 0 5px}.announcement p{font-size:10px;color:#a2a9b4;margin:0}.announcement button{background:#172b43;border:1px solid #258cff66;color:#b9dcff;border-radius:10px;padding:10px 15px;cursor:pointer;white-space:nowrap}
+.panel{background:#0b1018d9;border:1px solid #ffffff14;border-radius:17px;padding:23px;box-shadow:0 20px 60px #0005}.rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.rule-step{background:#101722;border:1px solid #ffffff12;border-radius:12px;padding:18px;display:flex;gap:15px;align-items:flex-start}.rule-step b{font:800 24px Inter;color:var(--accent2)}.rule-step p{font-size:12px;color:#c1c5ce;line-height:1.9;margin:0}.warning{margin:18px 0 0;padding:13px 15px;border-right:2px solid var(--accent);background:#258cff0c;color:#b9dfff;font-size:12px}
+.team{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.person{background:linear-gradient(145deg,#111923,#090e15);border:1px solid #ffffff16;border-radius:16px;padding:25px;position:relative;overflow:hidden}.person:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:#258cff12;top:-55px;left:-35px}.avatar{width:72px;height:72px;display:block;object-fit:cover;border-radius:18px;border:1px solid #258cff66;box-shadow:0 8px 25px #0008;margin-bottom:19px;background:#101722}.person h3{font:800 22px Inter;margin:0 0 8px;direction:ltr;text-align:right}.person p{font:700 9px Inter;letter-spacing:.12em;color:var(--accent2);min-height:24px;margin:0}.person a{font-size:10px;color:#a9d5ff;border-bottom:1px solid #258cff;padding-bottom:4px;display:inline-block;margin-top:18px}
+.summary{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:18px}.summary span{background:#101722;border:1px solid #ffffff12;padding:10px 14px;border-radius:10px;font-size:10px;color:#b8c1ce}.summary b{font:800 12px Inter;color:var(--accent2);direction:ltr;display:inline-block;margin-left:6px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}.search{flex:1;min-width:200px;background:#080d14;border:1px solid #ffffff1b;color:#fff;border-radius:10px;padding:12px 14px;outline:none;font-size:12px}.search:focus{border-color:var(--accent)}.filters{display:flex;gap:6px}.filters button{background:#111925;border:1px solid #ffffff15;color:#aeb7c3;padding:9px 14px;border-radius:9px;font-size:11px;cursor:pointer}.filters button.active{background:var(--accent);border-color:var(--accent);color:white}
+.tablewrap{overflow:auto;border:1px solid #ffffff14;border-radius:12px}table{border-collapse:collapse;width:100%;min-width:750px;text-align:right}th{background:#111b29;color:#9fcfff;font-size:11px;padding:14px}td{font-size:11px;color:#c7ccd4;padding:13px 14px;border-top:1px solid #ffffff10;line-height:1.8}tbody tr:hover{background:#258cff0b}.duration{display:inline-block;font:700 10px Inter;direction:ltr;color:#9ed3ff;background:#122b45;border:1px solid #258cff3a;padding:5px 9px;border-radius:7px;white-space:nowrap}.empty{text-align:center;color:#999;padding:25px}
+.faq{max-width:850px;margin:auto;display:grid;gap:9px}.faq-item{border:1px solid #ffffff16;background:#0d131c;border-radius:12px;overflow:hidden}.faq-q{width:100%;border:0;background:none;color:#eee;text-align:right;padding:17px 18px;display:flex;justify-content:space-between;cursor:pointer;font-size:12px}.faq-a{display:none;padding:0 18px 17px;color:#aab3bf;font-size:11px;line-height:2}.faq-item.open .faq-a{display:block}.all{display:block;margin:0 auto 16px;background:transparent;border:1px solid #ffffff25;color:#c5dfff;padding:9px 16px;border-radius:9px;font-size:10px;cursor:pointer}
+footer{border-top:1px solid #ffffff15;padding:28px 35px;text-align:center;color:#777f8d;font:9px Inter;letter-spacing:.16em;direction:ltr}
+.modal{display:none;position:fixed;inset:0;background:#000c;z-index:50;place-items:center;padding:20px}.modal.show{display:grid}.modalbox{max-width:520px;width:100%;background:#101925;border:1px solid #258cff66;border-radius:16px;padding:25px}.modalbox h3{margin-top:0}.modalbox p{font-size:12px;line-height:2;color:#bdc7d4}.modalbox button{background:var(--accent);border:0;color:#fff;border-radius:9px;padding:9px 17px;cursor:pointer}
+@media(max-width:700px){.top{padding:0 14px}.nav{position:static;transform:none;gap:12px;overflow:auto;margin-right:auto;margin-left:12px}.nav a{white-space:nowrap;font-size:10px}.homebtn{display:none}.brand{font-size:9px}.side{display:none}.notice{margin-bottom:90px}.hero{min-height:calc(100vh - 64px)}.section{padding:65px 16px}.team{grid-template-columns:1fr}.rules-grid{grid-template-columns:1fr}.announcement{align-items:flex-start;flex-direction:column}.stats{gap:8px}.stat{width:130px}.filters{width:100%}.filters button{flex:1}}
+
+.admin-entry{position:fixed;bottom:16px;left:16px;z-index:30;background:#101925;border:1px solid #258cff66;color:#c9e5ff;border-radius:10px;padding:9px 13px;font-size:11px;cursor:pointer}
+.admin-panel{display:none;position:fixed;inset:0;z-index:80;background:#000d;place-items:center;padding:16px;overflow:auto}
+.admin-panel.show{display:grid}.admin-card{width:min(620px,100%);max-height:90vh;overflow:auto;background:#0e1723;border:1px solid #258cff88;border-radius:16px;padding:22px}
+.admin-card h2{margin:0 0 16px}.admin-card label{display:block;font-size:11px;color:#b9c9da;margin:12px 0 6px}
+.admin-card input,.admin-card textarea{width:100%;background:#080e17;border:1px solid #ffffff22;color:#fff;border-radius:9px;padding:11px;font:inherit;font-size:12px}
+.admin-card textarea{min-height:100px;resize:vertical}.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.admin-actions button{background:#1764a8;color:white;border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font:inherit;font-size:11px}
+.admin-actions .secondary{background:#202a37}.admin-status{font-size:11px;color:#9fcfff;min-height:20px;margin-top:10px}
+.announcement-list{display:grid;gap:10px;margin-top:14px}.announcement-list .announcement{max-width:none}
+@media(max-width:700px){.admin-entry{bottom:10px;left:10px}}
+</style>
+</head>
+<body>
+<header class="top">
+ <a class="brand" href="#home"><i class="dot"></i><b>LAST DANCE</b><span>BANS SYSTEM</span></a>
+ <nav class="nav"><a href="#bans">جدول الباندات</a><a href="#team">مسؤولين الباند</a><a href="#archive">الأرشيف</a></nav>
+ <button class="homebtn" onclick="go('home')">الجدول الرئيسي</button>
+</header>
+<aside class="side left"><span>SCROLL</span><b>●</b><span>00</span></aside><aside class="side right"><span>STATUS</span><b>●</b><span>LD</span></aside>
+<main>
+<section class="hero" id="home"><div class="hero-inner">
+ <button class="notice" onclick="openNotice()"><span>‹</span><span class="num">1</span><span><strong>التعاميم الإدارية</strong><small>اضغط لعرض التعاميم الرسمية</small></span><span class="bell">♧</span></button>
+ <div class="eyebrow"><i></i> نظام الإدارة العام</div>
+ <h1>Last Dance</h1>
+ <p>نظام الإدارة المركزي لسيرفر Last Dance، يوفّر للإداريين منصة موحدة للوصول إلى جدول الباندات، العقوبات، المخالفات، والإجراءات التنظيمية، بهدف تعزيز الكفاءة والالتزام داخل المسؤولية بشكل أفضل.</p>
+ <div class="actions"><button class="btn" onclick="go('team')">مسؤولين الباند</button><button class="btn primary" onclick="go('rules')">قوانين الـTX</button></div>
+ <div class="stats"><div class="stat"><strong id="activeAdmins">420<em>+</em></strong><small>عدد الإداريين المتفاعلين</small></div><div class="stat"><strong id="solvedRate">98<em>%</em></strong><small>نسبة حل مشكلتك</small></div></div>
+ </div></section>
+<section class="section" id="announcements"><div class="section-title"><small>OFFICIAL UPDATES</small><h2>التعاميم الإدارية</h2><p>جميع التعاميم الرسمية الصادرة من إدارة Last Dance</p></div>
+ <div id="publicAnnouncements" class="announcement-list"><div class="announcement"><div><h3>تنبيه هام جداً بخصوص تنفيذ العقوبات</h3><p>فريق الباندات (Banned Team) · تعميم إداري رسمي</p></div><button onclick="openNotice()">قراءة التعميم ←</button></div></div></section>
+<section class="section" id="rules"><div class="section-title"><small>ADMIN GUIDELINES</small><h2>قوانين وتعليمات نظام الـTX</h2><p>Tx Text & Spectate & Banned Team Guidelines</p></div>
+ <div class="panel"><p style="font-size:12px;color:#b7c0cc;margin-top:0">السلام عليكم ورحمة الله وبركاته، طريقة إرسال الملاحظات كالتالي:</p>
+ <div class="rules-grid"><div class="rule-step"><b>01</b><p>في حال مخالفة الشخص للمرة الأولى يتم إرسال تنبيه الشات الكتابي مع تحذير الـ Warn.</p></div><div class="rule-step"><b>02</b><p>في حال عدم التجاوب يتم إرسال Warn مع تحذير 20 دقيقة.</p></div><div class="rule-step"><b>03</b><p>الرجاء عدم استخدام مصطلحات خارج نطاق الرول بلاي.</p></div><div class="rule-step"><b>04</b><p>الرجاء عدم التدخل في السيناريو.</p></div></div>
+ <div class="warning">في حال عدم الالتزام في طريقة التحذيرات سيتم محاسبتك.</div><p style="font-size:11px;color:#9da8b6;line-height:2;margin-bottom:0">ملحوظة هامة: DM (تنبيه في) ← DM (تنبيه في) ← Warn (تنبيه رسمي) ← باند (لا يتجاوز يوم). يتم إرسال الـ DM طوال أربع دقائق، وفي حال عدم الاستجابة يتم الانتظار ثلاث دقائق إضافية.</p></div></section>
+<section class="section" id="bans"><div class="section-title"><small>BANNED SYSTEM</small><h2>جدول الباندات الخاص بالباند تيم</h2><p>جدول العقوبات · ابحث بالمخالفة أو المدة، أو صفّي حسب نوع العقوبة</p></div>
+ <div class="summary"><span><b>42</b> إجمالي المخالفات</span><span><b>2 HOURS</b> أخف عقوبة</span><span><b>PERMANENT</b> أشد عقوبة</span></div>
+ <div class="panel"><div class="toolbar"><input id="search" class="search" placeholder="ابحث عن مخالفة أو مدة أو ملاحظة..." oninput="render()"><div class="filters"><button class="active" data-filter="all">الكل</button><button data-filter="hours">ساعات</button><button data-filter="days">أيام</button><button data-filter="permanent">دائم</button></div></div>
+ <div class="tablewrap"><table><thead><tr><th>العقوبة</th><th>المخالفة</th><th>الملاحظة</th><th>معلومات أخرى</th></tr></thead><tbody id="rows"></tbody></table></div><p id="count" style="font-size:10px;color:#8995a5;margin-bottom:0"></p></div></section>
+<section class="section" id="team"><div class="section-title"><small>BANNED MANAGERS</small><h2>Built With Trust & Efficiency</h2></div>
+ <div class="team"><article class="person"><img class="avatar" src="https://cdn.discordapp.com/attachments/1563554548449284246/1566849084743090338/avatar_1308.png?ex=6aeab22c&is=6ae960ac&hm=945977b280d0e669ddf06d11e8a31d4083d4311d3b2909f60d7b9ba422f4862c&" alt="DOT"><h3>DOT</h3><p>DOT</p><a href="#" onclick="return false">Profile Link ↗</a></article>
+ <article class="person"><img class="avatar" src="https://cdn.discordapp.com/avatars/402244963787603968/2658d5d146e906a1593384e1f22e8d14.webp?size=1024" alt="ABOOD"><h3>ABOOD</h3><p>ABOOD</p><a href="#" onclick="return false">Profile Link ↗</a></article>
+ <article class="person"><img class="avatar" src="https://cdn.discordapp.com/avatars/1072325710968004708/8f4d49fafbb2f50b9824e28baf3ee72f.webp?size=1024" alt="7IKE"><h3>7IKE</h3><p>ASSISTANT DOT</p><a href="#" onclick="return false">Profile Link ↗</a></article></div></section>
+<section class="section" id="archive"><div class="section-title"><small>ARCHIVE</small><h2>الأسئلة الأكثر تداولاً</h2></div><button class="all" onclick="toggleAll()">Expand All</button>
+ <div class="faq"><div class="faq-item"><button class="faq-q">ايش هي الباندات التقديريه ؟ <span>⌄</span></button><div class="faq-a">هي الباندات المسموح لك تقدير مدتها على حسب المشكله او الشكوى.</div></div>
+ <div class="faq-item"><button class="faq-q">هل اقدر افك باند شخص فقط عشان اشفقت عليه ؟ <span>⌄</span></button><div class="faq-a">غير صحيح، مسموح لك فقط فك الباندات الغير صحيحه.</div></div>
+ <div class="faq-item"><button class="faq-q">هل اقدر استلم شكوى انا منها ؟ <span>⌄</span></button><div class="faq-a">ممنوع ويجب طلب من اداري اخر استلامها.</div></div>
+ <div class="faq-item"><button class="faq-q">هل الباندات ممكن تتعدل في اي وقت ؟ <span>⌄</span></button><div class="faq-a">صحيح، بشكل متكرر وقابلة للتعديل في أي وقت.</div></div>
+ <div class="faq-item"><button class="faq-q">هل مسموح اتدخل في تكت اداري ثاني ؟ <span>⌄</span></button><div class="faq-a">ممنوع التدخل في تكت اداري ثاني دون ان يطلب منك التدخل.</div></div></div></section>
+</main>
+<footer>LAST DANCE · BANNED MANAGEMENT SYSTEM</footer>
+<div class="modal" id="modal" onclick="if(event.target===this)closeNotice()"><div class="modalbox" id="noticeModalContent"><h3>تنبيه هام جداً بخصوص تنفيذ العقوبات</h3><p>عموم الباندات تتطلب استدعاء ومقطع فيديو لا يقل عن دقيقة ويجب ان يكون ايديات جميع الاطراف واضحة.</p><p>الهدف من القرار: حفظ حقوق الجميع وضمان العدل التام داخل السيرفر. إدارة Last Dance</p><button onclick="closeNotice()">إغلاق</button></div></div>
+<button class="admin-entry" onclick="showAdmin()">لوحة الإدارة</button>
+<div class="admin-panel" id="adminPanel"><div class="admin-card"><h2>لوحة إدارة Last Dance</h2><div id="adminLogin"><label>البريد الإلكتروني</label><input id="adminEmail" type="email" autocomplete="username" placeholder="admin@example.com"><label>كلمة المرور</label><input id="adminPassword" type="password" autocomplete="current-password"><div class="admin-actions"><button onclick="adminLogin()">تسجيل الدخول</button><button class="secondary" onclick="hideAdmin()">إغلاق</button></div></div><div id="adminTools" hidden><label>عدد الإداريين المتفاعلين</label><input id="adminCount" type="number" min="0" max="1000000"><label>نسبة حل مشكلتك (%)</label><input id="solveRate" type="number" min="0" max="100"><div class="admin-actions"><button onclick="saveStats()">حفظ الإحصائيات</button></div><hr style="border-color:#ffffff20;margin:20px 0"><h3>نشر تعميم إداري</h3><label>عنوان التعميم</label><input id="noticeTitle" maxlength="140" placeholder="عنوان التعميم"><label>نص التعميم</label><textarea id="noticeBody" maxlength="5000" placeholder="اكتب نص التعميم هنا..."></textarea><div class="admin-actions"><button onclick="publishNotice()">نشر التعميم</button><button class="secondary" onclick="adminLogout()">تسجيل الخروج</button><button class="secondary" onclick="hideAdmin()">إغلاق</button></div></div><div class="admin-status" id="adminStatus"></div></div></div>
+<script>
+const bans=[
+["2 HOURS","تعبئة البيانات بوجود مسعف","لازم المسعف يكون موجود فعلاً وقت التعبئة، شوف المقطع قبل لا تنفذ","—"],
+["3 HOURS","استخراج السلاح او التلويح به في منطقة آمنة","السحب أو التلويح وحده يكفي، ما يحتاج طلقة. بس تأكد انه داخل حدود المنطقة","—"],
+["6 HOURS","أيموت في فايت","شوف المقطع من بداية الفايت، والحكم على تصرفه قبل الموت مو بعده","—"],
+["6 HOURS","عدم حمل تصوير","عذر نسيت أشغله ما ينقبل، التصوير لازم من بداية الموقف","—"],
+["6 HOURS","كلبشه داخل المناطق الأمنه","لازم المقطع يبين انه داخل المنطقة فعلاً مو على طرفها","—"],
+["6 HOURS","معالجة شخص و اخذه رهينه","يبين بالمقطع الترتيب: عالجه وبعدها اخذه رهينة","—"],
+["6 HOURS","إطلاق نار أثناء القيادة","ما يفرق نوع السلاح ولا اذا أصاب أحد، المهم انه كان يسوق وقت الطلق","—"],
+["6 HOURS","ضرب في منطقة امنة","نبي المقطع يبين الضربة والمكان، والايديات واضحة","—"],
+["8 HOURS","تدخل في حالة","قبل الباند شوف اذا واحد من أطراف الحالة طلب منه يتدخل","—"],
+["8 HOURS","إهانة جثة","الفعل لازم يكون بعد ما صارت جثة، مو وقت الفايت","—"],
+["8 HOURS","رجوع الحالة بعد الإسقاط","قارن وقت الإسقاط بوقت رجوعه من اللوق أو المقطع","—"],
+["8 HOURS","التذكر بعد اسقاط","اذا ذكر تفاصيل قبل الإسقاط يعتبر مخالفة، ونطلب المقطع اللي يثبت","—"],
+["10 HOURS","عدم تقدير الحياة","شوف اذا كان تحت تهديد حقيقي ولا لا، اذا لا يتطبق عليه","—"],
+["10 HOURS","إطلاق نار في منطقة آمنة","طلقة وحدة تكفي، ما يشترط يصيب أحد","—"],
+["10 HOURS","سرقة بدون تخطيط بداعي الفايت","لازم يبين انه ما كان فيه تخطيط، السرقة جت بس عشان يفتح فايت","—"],
+["12 HOURS","مقاومة عدد اكبر","العدد لازم يكون واضح بالمقطع قبل ما يبدأ الفايت","—"],
+["12 HOURS","تهديد في منطقة امنة","لفظي أو بالسلاح، المهم انه حصل داخل المنطقة","—"],
+["12 HOURS","تدخل في سيناريو","غير عن التدخل في حالة، تأكد انه سيناريو شغال وما كان من أطرافه","—"],
+["12 HOURS","عدم حضور استدعاء","تأكد انه انرسل له الاستدعاء وخلصت مهلته قبل التنفيذ","—"],
+["12 HOURS","الخلط بين الشخصيات او احداث مختلفة","وضح بالمقطع المعلومة اللي نقلها من شخصية لثانية","—"],
+["12 HOURS","التحلل في وسط سيناريو + تصفير","التصفير بعد ما تثبت المخالفة، وتذكر السبب في الإعلان","—"],
+["12 HOURS","تحرير رهينه بدون سبب ( مجرمين او عسكر )","ينطبق على الجهتين، والمهم انه ما كان في سبب رول بلاي","—"],
+["12 HOURS","سرقة مركبة عسكرية","تأكد انها عسكرية فعلاً مو مدنية بنفس الشكل","—"],
+["12 HOURS","خطف في منطقة امنة","المقطع لازم يبين الخطف وموقعه","—"],
+["1 DAY","Meta Gaming ( التواصل الغير شرعي )","نحتاج صورة أو مقطع يثبت المعلومة اللي وصلته من برا الرول","—"],
+["1 DAY","قتل في منطقة امنة","الموقع هو الأساس، والمقطع يبين لحظة القتل","—"],
+["1 DAY","أسلوب سيئ","يعتمد على شدة الأسلوب وسياقه، والأفضل تحط لقطة من المحادثة","—"],
+["2 DAYS","الخروج من الرول","شوف السياق قبل الباند، هل هو متعمد ولا مشكلة تقنية","—"],
+["2 DAYS","VDM ( التصادم العشوائي )","لازم يكون التصادم بدون سبب رول بلاي، شوف السرعة والمقطع","—"],
+["2 DAYS","RDM ( قتل بدون تهديد )","اسأل نفسك: صار تهديد قبل القتل؟ اذا لا، يتطبق","—"],
+["2 DAYS","التلويت المره الأولى + تصفير","تأكد انها فعلاً الأولى بسجله قبل لا تنفذ","—"],
+["3 DAYS","عدم احترام إداري","ارفق لقطة المحادثة أو التذكرة اللي صار فيها الموقف","—"],
+["3 DAYS","محاولة افتعال فايت أو فايت بدون سبب","المحاولة تكفي حتى لو ما صار فايت، المقطع يبين الاستفزاز","—"],
+["4 DAYS","التلفيت","يجب وجود مقطع دقيقة كاملة مع معلومات الشخص وهو ملفت وصورة من اللوقات","في حال كان الشخص ملفت عند اي قطاع عسكري مهما كان القطاع يتم تصفير حقيبة وذكر مع السبب + تصفير حقيبة خلاف ذلك باند فقط"],
+["4 DAYS","التلويت المره الثانيه + تصفير","ارجع لسجل باندات الشخص وتأكد انه عنده تلويت قبلها","—"],
+["1 WEEK","التلويت المره الثالثة + تصفير","تأكد ان المرتين اللي قبلها مسجلات عنده","—"],
+["PERMANENT","السب","لقطة واضحة من المحادثة أو مقطع صوتي، ويتطبق مباشرة","—"],
+["PERMANENT","سب الاهل","نفس السب، بس لازم يبين انه موجه للأهل بالتحديد","—"],
+["PERMANENT","القذف","لازم الاتهام يكون صريح، مع دليل","—"],
+["PERMANENT","هاك","ما يتطبق على الشك، نبي دليل قوي من اللوقات أو المقطع","—"],
+["PERMANENT","استغلال ثغرة","اذكر الثغرة بالتفصيل في المخالفة عشان تنسد","—"],
+["PERMANENT","تحرش","دليل كامل، ويتعامل معها بسرية","—"]
+];
+let active='all';
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+function durationType(d){return d.includes('HOURS')?'hours':d==='PERMANENT'?'permanent':'days'}
+function render(){let q=document.getElementById('search').value.trim().toLowerCase();let rows=bans.filter(r=>(active==='all'||durationType(r[0])===active)&&r.join(' ').toLowerCase().includes(q));document.getElementById('rows').innerHTML=rows.map(r=>`<tr><td><span class="duration">${r[0]}</span></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">لا توجد نتائج مطابقة</td></tr>';document.getElementById('count').textContent=`عرض ${rows.length} نتيجة`;}
+document.querySelectorAll('.filters button').forEach(b=>b.onclick=()=>{active=b.dataset.filter;document.querySelectorAll('.filters button').forEach(x=>x.classList.toggle('active',x===b));render()});
+document.querySelectorAll('.faq-q').forEach(b=>b.onclick=()=>b.parentElement.classList.toggle('open'));
+function toggleAll(){let items=[...document.querySelectorAll('.faq-item')],open=items.some(x=>!x.classList.contains('open'));items.forEach(x=>x.classList.toggle('open',open))}
+function openNotice(){document.getElementById('modal').classList.add('show')}function closeNotice(){document.getElementById('modal').classList.remove('show')}
+render();
+
+// Supabase setup: paste the Project URL and anon/publishable key here after creating your project.
+// Never put the service_role/secret key in this public HTML file.
+const SUPABASE_URL = "https://ngziwqedahqdottrrqdy.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5neml3cWVkYWhxZG90dHJycWR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2OTU0NDIsImV4cCI6MjEwOTI3MTQ0Mn0.tB-zbq2OHrFhZGapcx5_VricUf1JE8svKO4OJvSAczU";
+let supabaseClient = null, currentAdmin = null;
+
+function adminMessage(msg){const el=document.getElementById('adminStatus');if(el)el.textContent=msg}
+function showAdmin(){document.getElementById('adminPanel').classList.add('show')}
+function hideAdmin(){document.getElementById('adminPanel').classList.remove('show')}
+async function initBackend(){
+  if(!SUPABASE_URL.startsWith('https://') || SUPABASE_ANON_KEY.startsWith('PASTE_')) return;
+  try{
+    const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    supabaseClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    await loadPublicData();
+    supabaseClient.channel('public-live-updates')
+      .on('postgres_changes',{event:'*',schema:'public',table:'site_settings'},loadPublicData)
+      .on('postgres_changes',{event:'*',schema:'public',table:'announcements'},loadPublicData)
+      .subscribe();
+    const {data:{session}}=await supabaseClient.auth.getSession();
+    if(session) await revealAdminIfAuthorized();
+  }catch(e){console.error(e)}
+}
+async function loadPublicData(){
+  if(!supabaseClient)return;
+  const {data:settings}=await supabaseClient.from('site_settings').select('active_admins,solved_rate').eq('id',1).maybeSingle();
+  if(settings){
+    document.getElementById('activeAdmins').innerHTML=`${settings.active_admins}<em>+</em>`;
+    document.getElementById('solvedRate').innerHTML=`${settings.solved_rate}<em>%</em>`;
+  }
+  const {data:items}=await supabaseClient.from('announcements').select('id,title,body,created_at').eq('published',true).order('created_at',{ascending:false});
+  if(items){
+    const holder=document.getElementById('publicAnnouncements');
+    holder.innerHTML=items.map((n,i)=>`<div class="announcement"><div><h3>${escapeHtml(n.title)}</h3><p>تعميم إداري رسمي · ${new Date(n.created_at).toLocaleDateString('ar-SA')}</p></div><button onclick="openRemoteNotice(${i})">قراءة التعميم ←</button></div>`).join('') || '<p style="text-align:center;color:#9aa8b8">لا توجد تعاميم منشورة حالياً</p>';
+    window.remoteNotices=items;
+  }
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function openRemoteNotice(i){
+  const n=(window.remoteNotices||[])[i];if(!n)return;
+  document.getElementById('noticeModalContent').innerHTML=`<h3>${escapeHtml(n.title)}</h3><p style="white-space:pre-wrap">${escapeHtml(n.body)}</p><button onclick="closeNotice()">إغلاق</button>`;
+  openNotice();
+}
+async function adminLogin(){
+  if(!supabaseClient){adminMessage('أضف رابط مشروع Supabase والمفتاح العام أولاً.');return}
+  const email=document.getElementById('adminEmail').value.trim(),password=document.getElementById('adminPassword').value;
+  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error){adminMessage('تعذر تسجيل الدخول: '+error.message);return}
+  await revealAdminIfAuthorized();
+}
+async function revealAdminIfAuthorized(){
+  const {data:{user}}=await supabaseClient.auth.getUser();
+  const {data:allowed,error}=await supabaseClient.from('site_admins').select('user_id').eq('user_id',user.id).maybeSingle();
+  if(error||!allowed){await supabaseClient.auth.signOut();adminMessage('هذا الحساب غير مخوّل لإدارة الموقع.');return}
+  currentAdmin=user;document.getElementById('adminLogin').hidden=true;document.getElementById('adminTools').hidden=false;
+  const {data:s}=await supabaseClient.from('site_settings').select('active_admins,solved_rate').eq('id',1).single();
+  if(s){document.getElementById('adminCount').value=s.active_admins;document.getElementById('solveRate').value=s.solved_rate}
+  adminMessage('تم تسجيل الدخول بصلاحية مدير الموقع.');
+}
+async function saveStats(){
+  if(!currentAdmin)return;
+  const active=Number(document.getElementById('adminCount').value),rate=Number(document.getElementById('solveRate').value);
+  if(!Number.isInteger(active)||active<0||active>1000000||!Number.isInteger(rate)||rate<0||rate>100){adminMessage('تحقق من الأرقام المدخلة.');return}
+  const {error}=await supabaseClient.from('site_settings').update({active_admins:active,solved_rate:rate,updated_at:new Date().toISOString()}).eq('id',1);
+  adminMessage(error?'فشل الحفظ: '+error.message:'تم حفظ الإحصائيات وتحديثها للزوار.');
+  if(!error)await loadPublicData();
+}
+async function publishNotice(){
+  if(!currentAdmin)return;
+  const title=document.getElementById('noticeTitle').value.trim(),body=document.getElementById('noticeBody').value.trim();
+  if(!title||!body){adminMessage('اكتب عنوان التعميم ونصه.');return}
+  const {error}=await supabaseClient.from('announcements').insert({title,body,published:true,created_by:currentAdmin.id});
+  adminMessage(error?'فشل نشر التعميم: '+error.message:'تم نشر التعميم وظهر للزوار.');
+  if(!error){document.getElementById('noticeTitle').value='';document.getElementById('noticeBody').value='';await loadPublicData()}
+}
+async function adminLogout(){
+  if(supabaseClient)await supabaseClient.auth.signOut();
+  currentAdmin=null;document.getElementById('adminLogin').hidden=false;document.getElementById('adminTools').hidden=true;adminMessage('تم تسجيل الخروج.');
+}
+initBackend();
+</script>
+</body></html>
